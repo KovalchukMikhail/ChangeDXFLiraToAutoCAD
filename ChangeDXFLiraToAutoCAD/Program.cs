@@ -1,22 +1,17 @@
-﻿using System;
-using System.IO;
+﻿
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.EditorInput;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+
+
 
 
 namespace ChangeDXFLiraToAutoCAD
 {
-    public class ExamplLearning
+    public class CommonClass
     {
-
         public class CommandsFirst : IExtensionApplication
         {
             [CommandMethod("LIRA")]
@@ -192,7 +187,7 @@ namespace ChangeDXFLiraToAutoCAD
 
                 // получаем массив ID объектов
                 ObjectId[] idsGray = selResGray.Value.GetObjectIds();
-                
+
                 // начинаем транзакцию
                 using (Transaction tr = db.TransactionManager.StartTransaction())
                 {
@@ -209,7 +204,7 @@ namespace ChangeDXFLiraToAutoCAD
 
                     tr.Commit();
                 }
-                
+
 
                 // Увеличение толщины линий
 
@@ -256,7 +251,7 @@ namespace ChangeDXFLiraToAutoCAD
 
                     tr.Commit();
                 }
-                
+
                 // Распологаем цвета в соответсвующем порядке
                 // создаем переменную, в которой будут содержаться данные для фильтра
                 TypedValue[] filterColor94 = new TypedValue[1];
@@ -370,14 +365,14 @@ namespace ChangeDXFLiraToAutoCAD
 
                 // Удаляем слои PLAST, STER, SUPEL, переименовываем слои SOLID, KLEENKA, USILKLEEN
 
-                    // блокируем документ
-                    using (DocumentLock docloc = doc.LockDocument())
+                // блокируем документ
+                using (DocumentLock docloc = doc.LockDocument())
+                {
+                    // начинаем транзакцию
+                    using (Transaction tr = db.TransactionManager.StartTransaction())
                     {
-                        // начинаем транзакцию
-                        using (Transaction tr = db.TransactionManager.StartTransaction())
-                        {
-                            // открываем таблицу слоев документа
-                            LayerTable acLyrTbl = tr.GetObject(db.LayerTableId, OpenMode.ForWrite) as LayerTable;
+                        // открываем таблицу слоев документа
+                        LayerTable acLyrTbl = tr.GetObject(db.LayerTableId, OpenMode.ForWrite) as LayerTable;
 
                         // получаем запись слоя для изменений
                         LayerTableRecord layerSolid = (LayerTableRecord)tr.GetObject(acLyrTbl["SOLID"], OpenMode.ForWrite);
@@ -398,12 +393,12 @@ namespace ChangeDXFLiraToAutoCAD
                         tr.Commit();
 
                     }
-                    }
-
                 }
 
-            
-            void MoveToTop (ObjectId[] ids, Database db)
+            }
+
+
+            void MoveToTop(ObjectId[] ids, Database db)
             {
 
                 using (Transaction tr = db.TransactionManager.StartTransaction())
@@ -436,7 +431,7 @@ namespace ChangeDXFLiraToAutoCAD
                     tr.Commit();
                 }
             }
-            
+
 
             void IExtensionApplication.Initialize()
             {
@@ -448,6 +443,5 @@ namespace ChangeDXFLiraToAutoCAD
 
             }
         }
-
     }
 }
