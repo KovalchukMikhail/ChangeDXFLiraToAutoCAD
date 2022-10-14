@@ -6,7 +6,6 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.EditorInput;
 
 
-// Привет
 
 namespace ChangeDXFLiraToAutoCAD
 {
@@ -15,16 +14,20 @@ namespace ChangeDXFLiraToAutoCAD
         public class CommandsFirst : IExtensionApplication
         {
             [CommandMethod("LIRA")]
-            public void eraseCircles_2()
+            public void LiraStart()
             {
                 Document doc = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
+
+                // Выбираем все элементы и применяем к ним команду burst (Расчленение выбранных блоков с сохранением слоя блока и преобразованием значений атрибутов в текстовые объекты)
                 doc.SendStringToExecute("_ai_selall ", false, false, true);
                 doc.SendStringToExecute("burst ", false, false, true);
 
+                // Выбираем все элементы и применяем к ним команду FLATTEN (Ищменяет значение Z всех элементов на 0)
                 doc.SendStringToExecute("_ai_selall ", false, false, true);
                 doc.SendStringToExecute("FLATTEN  ", false, false, true);
 
-                doc.SendStringToExecute("LiraPlus ", false, false, true);
+                //Так как для завершения предыдущих команд нужно закончить выполнение метода, все следующие операции помещены в отдельную команду LiraEnd
+                doc.SendStringToExecute("LiraEnd ", false, false, true);
 
             }
 
@@ -42,8 +45,8 @@ namespace ChangeDXFLiraToAutoCAD
 
         public class CommandsSecond : IExtensionApplication
         {
-            [CommandMethod("LiraPlus")]
-            public void eraseCircles_2()
+            [CommandMethod("LiraEnd")]
+            public void LiraEnd()
             {
                 // Удаляем элементы из слоя PLAST
 
@@ -63,7 +66,6 @@ namespace ChangeDXFLiraToAutoCAD
                 SelectionFilter filter = new SelectionFilter(filterlist);
 
                 // пытаемся получить ссылки на объекты с учетом фильтра
-                // ВНИМАНИЕ! Нужно проверить работоспособность метода с замороженными и заблокированными слоями!
                 PromptSelectionResult selRes = ed.SelectAll(filter);
 
                 // если произошла ошибка - сообщаем о ней
@@ -86,7 +88,7 @@ namespace ChangeDXFLiraToAutoCAD
                         // приводим каждый из них к типу Entity
                         Entity entity = (Entity)tr.GetObject(id, OpenMode.ForRead);
 
-                        // открываем приговоренный объект на запись
+                        // открываем объект на запись
                         entity.UpgradeOpen();
 
                         // удаляем объект
@@ -98,10 +100,11 @@ namespace ChangeDXFLiraToAutoCAD
 
                 // Смещение текста в центры элементов
 
+                // Создаем новый фильтр
                 TypedValue[] filterListSecond = new TypedValue[1];
 
-                // первый аргумент (0) указывает, что мы задаем тип объекта
-                // второй аргумент ("CIRCLE") - собственно тип
+                // первый аргумент ((int)DxfCode.LayerName) указывает, что мы задаем тип объекта, а именно имя слоя
+                // второй аргумент ("USILKLEEN") - название слоя
                 filterListSecond[0] = new TypedValue((int)DxfCode.LayerName, "USILKLEEN");
 
                 // создаем фильтр
@@ -109,7 +112,6 @@ namespace ChangeDXFLiraToAutoCAD
 
 
                 // пытаемся получить ссылки на объекты с учетом фильтра
-                // ВНИМАНИЕ! Нужно проверить работоспособность метода с замороженными и заблокированными слоями!
                 PromptSelectionResult selResSecond = ed.SelectAll(filterSecond);
 
                 // если произошла ошибка - сообщаем о ней
@@ -132,27 +134,28 @@ namespace ChangeDXFLiraToAutoCAD
                     // открываем пространство модели (Model Space) - оно является одной из записей в таблице блоков документа
                     BlockTableRecord ms = tr.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                    // "пробегаем" по всем полученным объектам
+                    // "пробегаем" по всем полученным объектам. Для изменения положения тут по факту создаетются новые объекты текста содержащие тот же текст что и старые но имеющие изменненые координаты. старый текст удаляется
                     foreach (ObjectId id in idsSecond)
                     {
-                        // приводим каждый из них к типу Entity
+                        // приводим каждый из старых объектов к типу DBText
                         DBText textSecond = (DBText)tr.GetObject(id, OpenMode.ForRead);
 
+                        // создаем новые обыекты текста
                         DBText text = new DBText();
 
+                        // копируем в новые обекты текста содержимое старых и задаем новое положение и размер текста для новых объектов
                         text.Position = new Point3d(textSecond.Position.X + 0.5, textSecond.Position.Y + 0.7, 0);
                         text.Height = 0.05;
                         text.TextString = textSecond.TextString;
-                        //устанавливаем для объекта нужный слой и цвет
+                        //устанавливаем для новых объекта нужный слой и цвет
                         text.Layer = "USILKLEEN";
                         text.Color = Autodesk.AutoCAD.Colors.Color.FromRgb(0, 255, 255);
                         // добавляем созданный объект в пространство модели и в транзакцию
                         ms.AppendEntity(text);
                         tr.AddNewlyCreatedDBObject(text, true);
 
-                        // открываем приговоренный объект на запись
+                        // открываем старые объект на запись и удаляем их
                         textSecond.UpgradeOpen();
-                        textSecond.Height = 0.05;
                         textSecond.Erase();
 
                     }
@@ -164,18 +167,15 @@ namespace ChangeDXFLiraToAutoCAD
                 // создаем переменную, в которой будут содержаться данные для фильтра
                 TypedValue[] filterGray = new TypedValue[1];
 
-                // первый аргумент ((int)DxfCode.LayerName) указывает, что мы задаем тип объекта, а именно имя слоя
-                // второй аргумент ("PLAST") - собственно тип (имя слоя)
-                // переменную которая будет хранить цвет
 
-
+                // первый аргумент ((int)DxfCode.Color) указывает, что мы задаем тип объекта, а именно имя цвет
+                // второй аргумент ("9") - собственно тип (номер цвета)
                 filterGray[0] = new TypedValue((int)DxfCode.Color, "9");
 
                 // создаем фильтр
                 SelectionFilter filterForGray = new SelectionFilter(filterGray);
 
                 // пытаемся получить ссылки на объекты с учетом фильтра
-                // ВНИМАНИЕ! Нужно проверить работоспособность метода с замороженными и заблокированными слоями!
                 PromptSelectionResult selResGray = ed.SelectAll(filterForGray);
 
                 // если произошла ошибка - сообщаем о ней
@@ -212,17 +212,13 @@ namespace ChangeDXFLiraToAutoCAD
                 TypedValue[] filterLayer = new TypedValue[1];
 
                 // первый аргумент ((int)DxfCode.LayerName) указывает, что мы задаем тип объекта, а именно имя слоя
-                // второй аргумент ("PLAST") - собственно тип (имя слоя)
-                // переменную которая будет хранить цвет
-
-
+                // второй аргумент ("KLEENKA") - собственно тип (имя слоя)
                 filterLayer[0] = new TypedValue((int)DxfCode.LayerName, "KLEENKA");
 
                 // создаем фильтр
                 SelectionFilter filterForLayer = new SelectionFilter(filterLayer);
 
                 // пытаемся получить ссылки на объекты с учетом фильтра
-                // ВНИМАНИЕ! Нужно проверить работоспособность метода с замороженными и заблокированными слоями!
                 PromptSelectionResult selResLayer = ed.SelectAll(filterForLayer);
 
                 // если произошла ошибка - сообщаем о ней
@@ -288,7 +284,6 @@ namespace ChangeDXFLiraToAutoCAD
                 SelectionFilter filterFor11 = new SelectionFilter(filterColor11);
 
                 // пытаемся получить ссылки на объекты с учетом фильтра
-                // ВНИМАНИЕ! Нужно проверить работоспособность метода с замороженными и заблокированными слоями!
                 PromptSelectionResult selRes94 = ed.SelectAll(filterFor94);
                 PromptSelectionResult selRes5 = ed.SelectAll(filterFor5);
                 PromptSelectionResult selRes1 = ed.SelectAll(filterFor1);
@@ -298,7 +293,7 @@ namespace ChangeDXFLiraToAutoCAD
                 PromptSelectionResult selRes210 = ed.SelectAll(filterFor210);
                 PromptSelectionResult selRes11 = ed.SelectAll(filterFor11);
 
-                // если произошла ошибка - сообщаем о ней
+                // если цвет объекты существуют то выполняем метод MoveToTop() который последовательно размещает объекты на переднем плане
                 if (selRes94.Status == PromptStatus.OK)
                 {
                     // получаем массив ID объектов
@@ -413,7 +408,6 @@ namespace ChangeDXFLiraToAutoCAD
                     {
                         // приводим каждый из них к типу Entity
                         Entity gray = (Entity)tr.GetObject(id, OpenMode.ForRead);
-
 
                         block = (BlockTableRecord)tr.GetObject(gray.BlockId, OpenMode.ForWrite);
 
