@@ -5,7 +5,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.EditorInput;
 
-
+// Привет
 
 
 namespace ChangeDXFLiraToAutoCAD
