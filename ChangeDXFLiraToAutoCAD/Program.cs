@@ -42,7 +42,6 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
-
         public class CommandsSecond : IExtensionApplication
         {
             [CommandMethod("LiraEnd")]
@@ -81,7 +80,6 @@ namespace ChangeDXFLiraToAutoCAD
                 // начинаем транзакцию
                 using (Transaction tr = db.TransactionManager.StartTransaction())
                 {
-
                     // "пробегаем" по всем полученным объектам
                     foreach (ObjectId id in ids)
                     {
@@ -109,7 +107,6 @@ namespace ChangeDXFLiraToAutoCAD
 
                 // создаем фильтр
                 SelectionFilter filterSecond = new SelectionFilter(filterListSecond);
-
 
                 // пытаемся получить ссылки на объекты с учетом фильтра
                 PromptSelectionResult selResSecond = ed.SelectAll(filterSecond);
@@ -167,7 +164,6 @@ namespace ChangeDXFLiraToAutoCAD
                 // создаем переменную, в которой будут содержаться данные для фильтра
                 TypedValue[] filterGray = new TypedValue[1];
 
-
                 // первый аргумент ((int)DxfCode.Color) указывает, что мы задаем тип объекта, а именно имя цвет
                 // второй аргумент ("9") - собственно тип (номер цвета)
                 filterGray[0] = new TypedValue((int)DxfCode.Color, "9");
@@ -191,7 +187,6 @@ namespace ChangeDXFLiraToAutoCAD
                 // начинаем транзакцию
                 using (Transaction tr = db.TransactionManager.StartTransaction())
                 {
-
                     // "пробегаем" по всем полученным объектам
                     foreach (ObjectId id in idsGray)
                     {
@@ -234,7 +229,6 @@ namespace ChangeDXFLiraToAutoCAD
                 // начинаем транзакцию
                 using (Transaction tr = db.TransactionManager.StartTransaction())
                 {
-
                     // "пробегаем" по всем полученным объектам
                     foreach (ObjectId id in idsLayer)
                     {
@@ -272,7 +266,6 @@ namespace ChangeDXFLiraToAutoCAD
                 filterColor210[0] = new TypedValue((int)DxfCode.Color, "210");
                 filterColor11[0] = new TypedValue((int)DxfCode.Color, "11");
 
-
                 // создаем фильтр
                 SelectionFilter filterFor94 = new SelectionFilter(filterColor94);
                 SelectionFilter filterFor5 = new SelectionFilter(filterColor5);
@@ -299,7 +292,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids94 = selRes94.Value.GetObjectIds();
                     MoveToTop(ids94, db);
-
                 }
 
                 if (selRes5.Status == PromptStatus.OK)
@@ -307,7 +299,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids5 = selRes5.Value.GetObjectIds();
                     MoveToTop(ids5, db);
-
                 }
 
                 if (selRes1.Status == PromptStatus.OK)
@@ -315,7 +306,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids1 = selRes1.Value.GetObjectIds();
                     MoveToTop(ids1, db);
-
                 }
 
                 if (selRes190.Status == PromptStatus.OK)
@@ -323,7 +313,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids190 = selRes190.Value.GetObjectIds();
                     MoveToTop(ids190, db);
-
                 }
 
                 if (selRes3.Status == PromptStatus.OK)
@@ -331,7 +320,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids3 = selRes3.Value.GetObjectIds();
                     MoveToTop(ids3, db);
-
                 }
 
                 if (selRes30.Status == PromptStatus.OK)
@@ -339,7 +327,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids30 = selRes3.Value.GetObjectIds();
                     MoveToTop(ids30, db);
-
                 }
 
                 if (selRes210.Status == PromptStatus.OK)
@@ -347,7 +334,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids210 = selRes210.Value.GetObjectIds();
                     MoveToTop(ids210, db);
-
                 }
 
                 if (selRes11.Status == PromptStatus.OK)
@@ -355,7 +341,6 @@ namespace ChangeDXFLiraToAutoCAD
                     // получаем массив ID объектов
                     ObjectId[] ids11 = selRes11.Value.GetObjectIds();
                     MoveToTop(ids11, db);
-
                 }
 
                 // Удаляем слои PLAST, STER, SUPEL, переименовываем слои SOLID, KLEENKA, USILKLEEN
@@ -386,7 +371,6 @@ namespace ChangeDXFLiraToAutoCAD
                         layerSupel.Erase(true);
 
                         tr.Commit();
-
                     }
                 }
 
@@ -395,31 +379,25 @@ namespace ChangeDXFLiraToAutoCAD
 
             void MoveToTop(ObjectId[] ids, Database db)
             {
-
                 using (Transaction tr = db.TransactionManager.StartTransaction())
                 {
                     BlockTableRecord block;
                     DrawOrderTable drawOrder;
                     ObjectIdCollection idsLine = new ObjectIdCollection();
 
-
                     // "пробегаем" по всем полученным объектам
                     foreach (ObjectId id in ids)
                     {
                         // приводим каждый из них к типу Entity
                         Entity gray = (Entity)tr.GetObject(id, OpenMode.ForRead);
-
                         block = (BlockTableRecord)tr.GetObject(gray.BlockId, OpenMode.ForWrite);
-
                         drawOrder = (DrawOrderTable)tr.GetObject(block.DrawOrderTableId, OpenMode.ForWrite);
-
                         idsLine.Add(id);
 
                         if (id == ids[ids.Length - 1])
                         {
                             drawOrder.MoveToTop(idsLine);
                         }
-
                     }
 
                     tr.Commit();
