@@ -14,9 +14,13 @@ namespace ChangeDXFLiraToAutoCAD
 {
     public class Model
     {
-        public static void RemoveAllElementLayer(String layerName, TypedValue[] filterList, Editor ed, Database db)
+
+        /// <summary>
+        /// Removes all ellements in layer with name layerName
+        /// </summary>
+        public static void RemoveAllElementsLayer(String layerName, TypedValue[] filterList, Editor ed, Database db)
         {
-            filterList[0] = new TypedValue((int)DxfCode.LayerName, "PLAST");
+            filterList[0] = new TypedValue((int)DxfCode.LayerName, layerName);
 
             // создаем фильтр
             SelectionFilter filter = new SelectionFilter(filterList);
@@ -52,6 +56,9 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
+        /// <summary>
+        /// Relocates all text in layer with name layerName
+        /// </summary>
         public static void RelocateAllTextInLayer(double shiftX, double shiftY, String layerName, TypedValue[] filterList, Editor ed, Database db)
         {
             filterList[0] = new TypedValue((int)DxfCode.LayerName, layerName);
@@ -109,9 +116,12 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
-        public static void ChangeLayerForAllElementWithColor(String layerName, String ColorName, TypedValue[] filterList, Editor ed, Database db)
+        /// <summary>
+        /// Changes the layer for all objects with the color equal colorName
+        /// </summary>
+        public static void ChangeLayerForAllElementWithColor(String layerName, String colorName, TypedValue[] filterList, Editor ed, Database db)
         {
-            filterList[0] = new TypedValue((int)DxfCode.Color, ColorName);
+            filterList[0] = new TypedValue((int)DxfCode.Color, colorName);
 
             // создаем фильтр
             SelectionFilter filter = new SelectionFilter(filterList);
@@ -144,8 +154,10 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
-
-        public static void IncreaseeWightLines(String layerName, TypedValue[] filterList, Editor ed, Database db)
+        /// <summary>
+        /// Changes the wight lines with layer name equal layerName. New wight equal 60
+        /// </summary>
+        public static void IncreaseWightLines(String layerName, TypedValue[] filterList, Editor ed, Database db)
         {
             filterList[0] = new TypedValue((int)DxfCode.LayerName, layerName);
 
@@ -180,7 +192,9 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
-    
+        /// <summary>
+        /// Moves collorName color objects to the foreground
+        /// </summary>
         public static void ColorMoveToTop(String colorName, TypedValue[] filterList, Editor ed, Database db)
         {
 
@@ -198,6 +212,9 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
+        /// <summary>
+        /// Removes layer with name equal layerName.
+        /// </summary>
         public static void RemoveLayer(String layerName, Database db, Document doc)
         {
             // блокируем документ
@@ -219,6 +236,9 @@ namespace ChangeDXFLiraToAutoCAD
             }
         }
 
+        /// <summary>
+        /// Renames layer with name equal layerName.
+        /// </summary>
         public static void RenameLayer(String layerName, string newLayerName, Database db, Document doc)
         {
             // блокируем документ

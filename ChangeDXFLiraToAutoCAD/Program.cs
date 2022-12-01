@@ -56,7 +56,7 @@ namespace ChangeDXFLiraToAutoCAD
 
                 // Удаляем элементы из слоя PLAST
                 string layerName = "PLAST";
-                Model.RemoveAllElementLayer(layerName, filterList, ed, db);
+                Model.RemoveAllElementsLayer(layerName, filterList, ed, db);
 
                 // Смещение текста в центры элементов
                 layerName = "USILKLEEN";
@@ -72,7 +72,7 @@ namespace ChangeDXFLiraToAutoCAD
 
                 // Увеличение толщины линий
                 layerName = "KLEENKA";
-                Model.IncreaseeWightLines(layerName, filterList, ed, db);
+                Model.IncreaseWightLines(layerName, filterList, ed, db);
 
                 // Распологаем линии по цвету в нужном порядке
                 string[] color = { "94", "5", "1", "190", "3", "30", "210", "11" };
@@ -113,8 +113,3 @@ namespace ChangeDXFLiraToAutoCAD
         }
     }
 }
-
-2000 мм
-
-    6000 мм
-    3000 мм
