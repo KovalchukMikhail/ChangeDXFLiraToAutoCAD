@@ -13,6 +13,9 @@ namespace ChangeDXFLiraToAutoCAD
     {
         public class CommandsFirst : IExtensionApplication
         {
+            /// <summary>
+            /// Entry point
+            /// </summary>
             [CommandMethod("LIRA")]
             public void LiraStart()
             {
