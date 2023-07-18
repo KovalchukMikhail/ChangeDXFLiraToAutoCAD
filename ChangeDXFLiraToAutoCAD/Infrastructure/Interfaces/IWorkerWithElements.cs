@@ -24,7 +24,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure.Interfaces
         /// <summary>
         /// Меняет вес линий в слое с именем layer name. Новый вес линий 60
         /// </summary>
-        void IncreaseWightLines(string layerName, LineWeight lineWeight);
+        void ChangeWightLines(string layerName, LineWeight lineWeight);
 
         /// <summary>
         /// Перемещает объекты с цветом collorName на передний план

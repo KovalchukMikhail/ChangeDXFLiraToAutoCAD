@@ -116,7 +116,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
                 tr.Commit();
             }
         }
-        public void IncreaseWightLines(string layerName, LineWeight lineWeight)
+        public void ChangeWightLines(string layerName, LineWeight lineWeight)
         {
             // получаем массив ID объектов
             ObjectId[] ids;

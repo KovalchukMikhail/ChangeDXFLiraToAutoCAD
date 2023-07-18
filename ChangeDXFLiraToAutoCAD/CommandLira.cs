@@ -50,7 +50,7 @@ namespace ChangeDXFLiraToAutoCAD
             // Увеличение толщины линий
             layerName = "KLEENKA";
             LineWeight lineWeight = LineWeight.LineWeight060;
-            workerWithElements.IncreaseWightLines(layerName, lineWeight);
+            workerWithElements.ChangeWightLines(layerName, lineWeight);
             // Распологаем линии по цвету в нужном порядке
             string[] color = { "94", "5", "1", "190", "3", "30", "210", "11" };
             foreach (string i in color)
