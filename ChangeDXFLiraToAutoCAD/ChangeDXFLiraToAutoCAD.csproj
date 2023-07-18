@@ -53,8 +53,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="CommandLira.cs" />
+    <Compile Include="Infrastructure\FilterCreator.cs" />
+    <Compile Include="Infrastructure\Interfaces\IFilter.cs" />
+    <Compile Include="Infrastructure\ObjectSelecter.cs" />
+    <Compile Include="Infrastructure\Interfaces\IObjectSelecter.cs" />
+    <Compile Include="Infrastructure\Interfaces\IWorkerWithElements.cs" />
+    <Compile Include="Infrastructure\Interfaces\IWorkerWithLayer.cs" />
+    <Compile Include="Infrastructure\WorkerWithLayer.cs" />
+    <Compile Include="Infrastructure\WorkerWithElements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
