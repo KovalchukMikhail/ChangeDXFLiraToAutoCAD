@@ -1,10 +1,4 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace ChangeDXFLiraToAutoCAD.Infrastructure.Interfaces
 {
@@ -13,12 +7,12 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure.Interfaces
         /// <summary>
         /// Удаляет слой с именем layerName.
         /// </summary>
-        void RemoveLayer(String layerName);
+        void RemoveLayer(string layerName);
 
         /// <summary>
         /// Renames layer with name equal layerName.
         /// Пееименовывает слой с именем layerName. Новое имя newLayerName
         /// </summary>
-        void RenameLayer(String layerName, string newLayerName);
+        void RenameLayer(string layerName, string newLayerName);
     }
 }

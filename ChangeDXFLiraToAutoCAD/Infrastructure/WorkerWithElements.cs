@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
@@ -22,7 +18,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
             this.db = db;
             objectSelecter = new ObjectSelecter(editor);
         }
-        public void RemoveAllElementsLayer(String layerName)
+        public void RemoveAllElementsLayer(string layerName)
         {
             // получаем массив ID объектов
             ObjectId[] ids;
@@ -49,7 +45,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
                 tr.Commit();
             }
         }
-        public void RelocateAllTextInLayer(double shiftX, double shiftY, String layerName)
+        public void RelocateAllTextInLayer(double shiftX, double shiftY, string layerName)
         {
             // получаем массив ID объектов
             ObjectId[] ids;
@@ -92,7 +88,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
                 tr.Commit();
             }
         }
-        public void ChangeLayerForAllElementWithColor(String layerName, String colorName)
+        public void ChangeLayerForAllElementWithColor(string layerName, string colorName)
         {
             // получаем массив ID объектов
             ObjectId[] ids;
@@ -120,7 +116,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
                 tr.Commit();
             }
         }
-        public void IncreaseWightLines(String layerName, LineWeight lineWeight)
+        public void IncreaseWightLines(string layerName, LineWeight lineWeight)
         {
             // получаем массив ID объектов
             ObjectId[] ids;
@@ -148,7 +144,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
                 tr.Commit();
             }
         }
-        public void ColorMoveToTop(String colorName)
+        public void ColorMoveToTop(string colorName)
         {
             ObjectId[] ids;
             try

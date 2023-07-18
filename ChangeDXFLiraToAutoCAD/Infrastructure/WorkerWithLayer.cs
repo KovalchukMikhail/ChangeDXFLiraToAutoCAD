@@ -2,10 +2,7 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using ChangeDXFLiraToAutoCAD.Infrastructure.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ChangeDXFLiraToAutoCAD.Infrastructure
 {
@@ -35,7 +32,7 @@ namespace ChangeDXFLiraToAutoCAD.Infrastructure
                 }
             }
         }
-        public void RenameLayer(String layerName, string newLayerName)
+        public void RenameLayer(string layerName, string newLayerName)
         {
             // блокируем документ
             using (DocumentLock docloc = doc.LockDocument())
